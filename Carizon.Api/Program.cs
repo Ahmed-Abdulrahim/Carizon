@@ -1,4 +1,3 @@
-
 namespace Carizon.Api
 {
     public class Program
@@ -13,7 +12,15 @@ namespace Carizon.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddSwaggerService(builder.Configuration);
+            builder.Services.AddApplicationServices();
+            builder.Services.AddInfrastructureService();
+            builder.Services.AddCors(op => op.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                .AllowAnyOrigin()
+                .AllowAnyOrigin();
+            }));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -22,9 +29,10 @@ namespace Carizon.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
