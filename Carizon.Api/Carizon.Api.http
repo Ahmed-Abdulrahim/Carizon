@@ -1,0 +1,6 @@
+@Carizon.Api_HostAddress = http://localhost:5250
+
+GET {{Carizon.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
