@@ -19,7 +19,7 @@
         public DateTime DecidedAt { get; set; }
 
         //Naviagtion Prop
-        public Inspection Rule { get; set; }
+        public Inspection Inspection { get; set; }
         public ApplicationUser User { get; set; }
     }
 }

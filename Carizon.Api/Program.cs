@@ -1,8 +1,11 @@
+using Carizon.Infrastructure.Presistence;
+using System.Threading.Tasks;
+
 namespace Carizon.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,7 @@ namespace Carizon.Api
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerService(builder.Configuration);
             builder.Services.AddApplicationServices();
-            builder.Services.AddInfrastructureService();
+            builder.Services.AddInfrastructureService(builder.Configuration);
             builder.Services.AddCors(op => op.AddPolicy("AllowAll", policy =>
             {
                 policy.AllowAnyOrigin()
@@ -22,7 +25,7 @@ namespace Carizon.Api
                 .AllowAnyOrigin();
             }));
             var app = builder.Build();
-
+            await app.Services.SeedAsync();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

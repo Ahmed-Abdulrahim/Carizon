@@ -11,6 +11,6 @@
         public DateTime CalculatedAt { get; set; }
 
         //Nvigation Prop
-        public InspectionRule Rule { get; set; }
+        public Inspection Inspection { get; set; }
     }
 }

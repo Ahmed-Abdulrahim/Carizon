@@ -1,4 +1,4 @@
-﻿namespace Carizon.Infrastructure.Presistence
+﻿namespace Carizon.Infrastructure.Presistence.Configrations
 {
     public class InspectionRuleConfigration : IEntityTypeConfiguration<InspectionRule>
     {

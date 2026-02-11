@@ -16,7 +16,7 @@
 
             //RelationShip
             builder.HasOne(i => i.Inspector).WithMany(a => a.Inspectors).HasForeignKey(i => i.InspectorId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(i => i.Seller).WithMany(a => a.Sellers).HasForeignKey(i => i.SellerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(i => i.Seller).WithMany(a => a.Sellers).HasForeignKey(i => i.SellerId).OnDelete(DeleteBehavior.NoAction);
 
             //Index
             builder.HasIndex(i => i.SellerId).HasDatabaseName("IX_Inspections_SellerId");

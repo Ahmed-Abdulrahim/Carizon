@@ -11,6 +11,7 @@
         public ICollection<UserEvent> UserEvents { get; set; } = new List<UserEvent>();
         public ICollection<Inspection> Inspectors { get; set; } = new List<Inspection>();
         public ICollection<Inspection> Sellers { get; set; } = new List<Inspection>();
+        public ICollection<FinalDecision> FinalDecisions { get; set; } = new List<FinalDecision>();
 
     }
 }

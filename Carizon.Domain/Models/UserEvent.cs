@@ -16,6 +16,6 @@
 
         //Navigation Prop
         public ApplicationUser User { get; set; }
-        public InspectionRule Rule { get; set; }
+        public Inspection Inspection { get; set; }
     }
 }

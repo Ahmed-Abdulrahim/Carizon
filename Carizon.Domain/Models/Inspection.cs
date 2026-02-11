@@ -22,5 +22,9 @@
         public ApplicationUser Inspector { get; set; }
         public ApplicationUser Seller { get; set; }
         public ICollection<InspectionResult> InspectionResult { get; set; }
+        public PricingResult PricingResult { get; set; }
+        public AnalyticsScore AnalyticsScore { get; set; }
+        public FinalDecision FinalDecision { get; set; }
+        public ICollection<UserEvent> UserEvents { get; set; }
     }
 }
