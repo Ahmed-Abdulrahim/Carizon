@@ -10,3 +10,5 @@ global using Carizon.Application.Interfaces;
 global using System.Linq.Expressions;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Carizon.Infrastructure.Specifications;
+global using Carizon.Infrastructure.Repositories;
+

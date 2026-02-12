@@ -30,6 +30,11 @@
             })
          .AddEntityFrameworkStores<CarizonDbContext>()
          .AddDefaultTokenProviders();
+
+
+
+            // Register services
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
     }
