@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
+﻿
 #nullable disable
 
 namespace Carizon.Infrastructure.Presistence.Migrations
 {
     /// <inheritdoc />
-    public partial class createDataBase : Migration
+    public partial class UpdateDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -157,7 +155,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     Mileage = table.Column<int>(type: "int", nullable: false),
                     InspectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SellerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "pending"),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pending"),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -251,7 +249,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     InspectionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EngagmentScore = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    EngagementScore = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     BuyerIntentScore = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
                     SaveCount = table.Column<int>(type: "int", nullable: false),
@@ -262,7 +260,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 {
                     table.PrimaryKey("PK_AnalyticsScores", x => x.Id);
                     table.CheckConstraint("CK_AnalyticsScore_BuyerIntentScore_Range", "[BuyerIntentScore] >= 0 AND [BuyerIntentScore] <= 100");
-                    table.CheckConstraint("CK_AnalyticsScore_EngagementScore_Range", "[EngagmentScore] >= 0 AND [EngagmentScore] <= 100");
+                    table.CheckConstraint("CK_AnalyticsScore_EngagementScore_Range", "[EngagementScore] >= 0 AND [EngagementScore] <= 100");
                     table.ForeignKey(
                         name: "FK_AnalyticsScores_Inspections_InspectionId",
                         column: x => x.InspectionId,
@@ -312,7 +310,6 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     Score = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Decision = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TotalScore = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
@@ -385,6 +382,30 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PricingFactorPricingResult",
+                columns: table => new
+                {
+                    PricingFactorsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PricingResultsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PricingFactorPricingResult", x => new { x.PricingFactorsId, x.PricingResultsId });
+                    table.ForeignKey(
+                        name: "FK_PricingFactorPricingResult_PricingFactors_PricingFactorsId",
+                        column: x => x.PricingFactorsId,
+                        principalTable: "PricingFactors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PricingFactorPricingResult_PricingResults_PricingResultsId",
+                        column: x => x.PricingResultsId,
+                        principalTable: "PricingResults",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AnalyticsScores_InspectionId",
                 table: "AnalyticsScores",
@@ -431,6 +452,16 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FinalDecision_DecideAt",
+                table: "FinalDecisions",
+                column: "DecidedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinalDecision_Decision",
+                table: "FinalDecisions",
+                column: "Decision");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FinalDecisions_DecidedBy",
                 table: "FinalDecisions",
                 column: "DecidedBy");
@@ -440,6 +471,11 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 table: "FinalDecisions",
                 column: "InspectionId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InspectionResults_Decision",
+                table: "InspectionResults",
+                column: "Decision");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InspectionResults_InspectionId",
@@ -463,6 +499,17 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 column: "Category");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inspections_CarVin",
+                table: "Inspections",
+                column: "CarVin",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inspections_CreatedAt",
+                table: "Inspections",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Inspections_InspectorId",
                 table: "Inspections",
                 column: "InspectorId");
@@ -478,21 +525,31 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 column: "Status");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PricingFactorPricingResult_PricingResultsId",
+                table: "PricingFactorPricingResult",
+                column: "PricingResultsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PricingResults_InspectionId",
                 table: "PricingResults",
                 column: "InspectionId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_ExpireAt",
+                table: "RefreshTokens",
+                column: "ExpiresAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
                 table: "RefreshTokens",
                 column: "Token",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefreshTokens_UserId",
-                table: "RefreshTokens",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserEvents_EventType",
@@ -538,10 +595,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                 name: "InspectionResults");
 
             migrationBuilder.DropTable(
-                name: "PricingFactors");
-
-            migrationBuilder.DropTable(
-                name: "PricingResults");
+                name: "PricingFactorPricingResult");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
@@ -554,6 +608,12 @@ namespace Carizon.Infrastructure.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "InspectionRules");
+
+            migrationBuilder.DropTable(
+                name: "PricingFactors");
+
+            migrationBuilder.DropTable(
+                name: "PricingResults");
 
             migrationBuilder.DropTable(
                 name: "Inspections");

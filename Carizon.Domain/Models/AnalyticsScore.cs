@@ -3,7 +3,7 @@
     public class AnalyticsScore : BaseEntity
     {
         public Guid InspectionId { get; set; }
-        public decimal EngagmentScore { get; set; }
+        public decimal EngagementScore { get; set; }
         public decimal BuyerIntentScore { get; set; }
         public int ViewCount { get; set; }
         public int SaveCount { get; set; }

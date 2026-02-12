@@ -13,5 +13,8 @@
         public FactorType FactorType { get; set; }
         public decimal Weight { get; set; }
         public bool IsActive { get; set; } = true;
+
+        //Navigation Prop
+        public ICollection<PricingResult> PricingResults { get; set; }
     }
 }

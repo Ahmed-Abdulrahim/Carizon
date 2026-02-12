@@ -5,8 +5,6 @@
         public CarizonDbContext(DbContextOptions<CarizonDbContext> options) : base(options) { }
 
         //DataBase
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<AnalyticsScore> AnalyticsScores { get; set; }
         public DbSet<FinalDecision> FinalDecisions { get; set; }
         public DbSet<Inspection> Inspections { get; set; }

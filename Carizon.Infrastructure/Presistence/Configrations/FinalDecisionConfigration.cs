@@ -20,6 +20,11 @@ namespace Carizon.Infrastructure.Presistence.Configrations
 
             builder.HasOne(f => f.User).WithMany(a => a.FinalDecisions).HasForeignKey(f => f.DecidedBy)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //Index
+            builder.HasIndex(f => f.Decision).HasDatabaseName("IX_FinalDecision_Decision");
+            builder.HasIndex(f => f.DecidedAt).HasDatabaseName("IX_FinalDecision_DecideAt");
+
         }
     }
 }

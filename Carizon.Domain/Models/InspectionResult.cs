@@ -13,8 +13,9 @@
         public int Score { get; set; }
         public string? Notes { get; set; }
         public InspectionResultDecision Decision { get; set; }
-        public decimal TotalScore { get; set; }
         public DateTime CreatedAt { get; set; }
+        public decimal TotalScore => Score * Rule.Weight;
+
 
         //Navigation Properties
         public Inspection Inspection { get; set; }

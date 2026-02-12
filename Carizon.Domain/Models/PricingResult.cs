@@ -12,5 +12,6 @@
 
         //Navigaton Properties
         public Inspection Inspection { get; set; }
+        public ICollection<PricingFactor> PricingFactors { get; set; }
     }
 }

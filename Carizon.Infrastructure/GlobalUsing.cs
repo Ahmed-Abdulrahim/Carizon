@@ -6,3 +6,5 @@ global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Carizon.Infrastructure.Presistence.DbContext;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.AspNetCore.Identity;
+
+global using Microsoft.EntityFrameworkCore.Migrations;

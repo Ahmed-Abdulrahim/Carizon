@@ -1,5 +1,4 @@
-﻿
-namespace Carizon.Infrastructure.Presistence.Configrations
+﻿namespace Carizon.Infrastructure.Presistence.Configrations
 {
     public class InspectionResultConfigration : IEntityTypeConfiguration<InspectionResult>
     {
@@ -13,7 +12,6 @@ namespace Carizon.Infrastructure.Presistence.Configrations
             builder.Property(i => i.Score).IsRequired();
             builder.Property(i => i.Notes).HasMaxLength(500).IsRequired(false);
             builder.Property(i => i.Decision).HasConversion<string>().HasMaxLength(20).IsRequired();
-            builder.Property(i => i.TotalScore).HasColumnType("decimal(5,2)").IsRequired();
             builder.Property(i => i.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
 
             //RelationShip
@@ -24,11 +22,10 @@ namespace Carizon.Infrastructure.Presistence.Configrations
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Indexes
-            builder.HasIndex(ir => ir.InspectionId)
-                .HasDatabaseName("IX_InspectionResults_InspectionId");
+            builder.HasIndex(ir => ir.InspectionId).HasDatabaseName("IX_InspectionResults_InspectionId");
 
-            builder.HasIndex(ir => ir.RuleId)
-                .HasDatabaseName("IX_InspectionResults_RuleId");
+            builder.HasIndex(ir => ir.RuleId).HasDatabaseName("IX_InspectionResults_RuleId");
+            builder.HasIndex(ir => ir.Decision).HasDatabaseName("IX_InspectionResults_Decision");
 
             builder.HasIndex(ir => new { ir.InspectionId, ir.RuleId })
                 .IsUnique()

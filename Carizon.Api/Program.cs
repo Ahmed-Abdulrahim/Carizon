@@ -1,6 +1,3 @@
-using Carizon.Infrastructure.Presistence;
-using System.Threading.Tasks;
-
 namespace Carizon.Api
 {
     public class Program
@@ -22,10 +19,18 @@ namespace Carizon.Api
             {
                 policy.AllowAnyOrigin()
                 .AllowAnyOrigin()
-                .AllowAnyOrigin();
+               .AllowAnyHeader();
             }));
             var app = builder.Build();
-            await app.Services.SeedAsync();
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CarizonDbContext>();
+                if (context.Database.GetPendingMigrations().Any())
+                {
+                    await context.Database.MigrateAsync();
+                    await app.Services.SeedAsync();
+                }
+            }
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

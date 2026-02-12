@@ -8,11 +8,11 @@ namespace Carizon.Infrastructure.Presistence.Configrations
             builder.ToTable("AnalyticsScores", c =>
             {
                 c.HasCheckConstraint("CK_AnalyticsScore_EngagementScore_Range",
-                    "[EngagmentScore] >= 0 AND [EngagmentScore] <= 100");
+                    "[EngagementScore] >= 0 AND [EngagementScore] <= 100");
                 c.HasCheckConstraint("CK_AnalyticsScore_BuyerIntentScore_Range",
                     "[BuyerIntentScore] >= 0 AND [BuyerIntentScore] <= 100");
             });
-            builder.Property(a => a.EngagmentScore).HasColumnType("decimal(5,2)").IsRequired();
+            builder.Property(a => a.EngagementScore).HasColumnType("decimal(5,2)").IsRequired();
             builder.Property(a => a.BuyerIntentScore).HasColumnType("decimal(5,2)").IsRequired();
             builder.Property(a => a.CalculatedAt).HasDefaultValueSql("GETUTCDATE()");
 

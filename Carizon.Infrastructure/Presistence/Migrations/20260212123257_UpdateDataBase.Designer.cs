@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Carizon.Infrastructure.Presistence.Migrations
 {
     [DbContext(typeof(CarizonDbContext))]
-    [Migration("20260211200241_createDataBase")]
-    partial class createDataBase
+    [Migration("20260212123257_UpdateDataBase")]
+    partial class UpdateDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     b.Property<int>("ContactCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("EngagmentScore")
+                    b.Property<decimal>("EngagementScore")
                         .HasColumnType("decimal(5,2)");
 
                     b.Property<Guid>("InspectionId")
@@ -63,7 +63,7 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                         {
                             t.HasCheckConstraint("CK_AnalyticsScore_BuyerIntentScore_Range", "[BuyerIntentScore] >= 0 AND [BuyerIntentScore] <= 100");
 
-                            t.HasCheckConstraint("CK_AnalyticsScore_EngagementScore_Range", "[EngagmentScore] >= 0 AND [EngagmentScore] <= 100");
+                            t.HasCheckConstraint("CK_AnalyticsScore_EngagementScore_Range", "[EngagementScore] >= 0 AND [EngagementScore] <= 100");
                         });
                 });
 
@@ -214,7 +214,13 @@ namespace Carizon.Infrastructure.Presistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DecidedAt")
+                        .HasDatabaseName("IX_FinalDecision_DecideAt");
+
                     b.HasIndex("DecidedBy");
+
+                    b.HasIndex("Decision")
+                        .HasDatabaseName("IX_FinalDecision_Decision");
 
                     b.HasIndex("InspectionId")
                         .IsUnique();
@@ -268,9 +274,16 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("pending");
+                        .HasDefaultValue("Pending");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarVin")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Inspections_CarVin");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("IX_Inspections_CreatedAt");
 
                     b.HasIndex("InspectorId")
                         .HasDatabaseName("IX_Inspections_InspectorId");
@@ -313,10 +326,10 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("TotalScore")
-                        .HasColumnType("decimal(5,2)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("Decision")
+                        .HasDatabaseName("IX_InspectionResults_Decision");
 
                     b.HasIndex("InspectionId")
                         .HasDatabaseName("IX_InspectionResults_InspectionId");
@@ -465,10 +478,14 @@ namespace Carizon.Infrastructure.Presistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("IX_RefreshToken_ExpireAt");
+
                     b.HasIndex("Token")
                         .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_RefreshToken_UserId");
 
                     b.ToTable("RefreshTokens", (string)null);
                 });
@@ -613,6 +630,21 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PricingFactorPricingResult", b =>
+                {
+                    b.Property<Guid>("PricingFactorsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PricingResultsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PricingFactorsId", "PricingResultsId");
+
+                    b.HasIndex("PricingResultsId");
+
+                    b.ToTable("PricingFactorPricingResult");
                 });
 
             modelBuilder.Entity("Carizon.Domain.Models.AnalyticsScore", b =>
@@ -771,6 +803,21 @@ namespace Carizon.Infrastructure.Presistence.Migrations
                     b.HasOne("Carizon.Domain.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PricingFactorPricingResult", b =>
+                {
+                    b.HasOne("Carizon.Domain.Models.PricingFactor", null)
+                        .WithMany()
+                        .HasForeignKey("PricingFactorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Carizon.Domain.Models.PricingResult", null)
+                        .WithMany()
+                        .HasForeignKey("PricingResultsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

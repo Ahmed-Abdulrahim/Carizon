@@ -12,7 +12,7 @@
             builder.Property(i => i.Mileage).IsRequired();
             builder.Property(i => i.CompletedAt).IsRequired(false);
             builder.Property(i => i.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            builder.Property(i => i.Status).HasMaxLength(20).HasConversion<string>().IsRequired().HasDefaultValue(InspectionStatus.pending);
+            builder.Property(i => i.Status).HasMaxLength(20).HasConversion<string>().IsRequired().HasDefaultValue(InspectionStatus.Pending);
 
             //RelationShip
             builder.HasOne(i => i.Inspector).WithMany(a => a.Inspectors).HasForeignKey(i => i.InspectorId).OnDelete(DeleteBehavior.Cascade);
@@ -22,6 +22,8 @@
             builder.HasIndex(i => i.SellerId).HasDatabaseName("IX_Inspections_SellerId");
             builder.HasIndex(i => i.InspectorId).HasDatabaseName("IX_Inspections_InspectorId");
             builder.HasIndex(i => i.Status).HasDatabaseName("IX_Inspections_Status");
+            builder.HasIndex(i => i.CarVin).IsUnique().HasDatabaseName("IX_Inspections_CarVin");
+            builder.HasIndex(i => i.CreatedAt).HasDatabaseName("IX_Inspections_CreatedAt");
 
         }
     }

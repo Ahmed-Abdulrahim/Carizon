@@ -43,11 +43,11 @@
         {
             var users = new[]
             {
-                new { Email = "admin@carizon.com", FirstName = "Admin", LastName = "User", Role = "Admin", Password = "Admin@123456" },
-                new { Email = "inspector@carizon.com", FirstName = "Inspector", LastName = "User", Role = "Inspector", Password = "Inspector@123456" },
-                new { Email = "analyst@carizon.com", FirstName = "Analyst", LastName = "User", Role = "Analyst", Password = "Analyst@123456" },
-                new { Email = "seller@carizon.com", FirstName = "Seller", LastName = "User", Role = "Seller", Password = "Seller@123456" },
-                new { Email = "user@carizon.com", FirstName = "Basic", LastName = "User", Role = "User", Password = "User@123456" }
+                new { Email = "admin@example.com", FirstName = "Admin", LastName = "User", Role = "Admin", Password = "P@ssw0rd" },
+                new { Email = "inspector@example.com", FirstName = "Inspector", LastName = "User", Role = "Inspector", Password = "P@ssw0rd" },
+                new { Email = "analyst@example.com", FirstName = "Analyst", LastName = "User", Role = "Analyst", Password = "P@ssw0rd" },
+                new { Email = "seller@example.com", FirstName = "Seller", LastName = "User", Role = "Seller", Password = "P@ssw0rd" },
+                new { Email = "user@example.com", FirstName = "Basic", LastName = "User", Role = "User", Password = "P@ssw0rd" }
             };
 
             foreach (var user in users)
