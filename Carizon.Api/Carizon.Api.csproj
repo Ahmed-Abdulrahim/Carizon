@@ -11,10 +11,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Controllers\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Carizon.Infrastructure\Carizon.Infrastructure.csproj" />
 	</ItemGroup>
 	<ItemGroup>

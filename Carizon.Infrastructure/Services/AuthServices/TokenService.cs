@@ -1,4 +1,4 @@
-﻿namespace Carizon.Infrastructure.Services
+﻿namespace Carizon.Infrastructure.Services.AuthServices
 {
     public class TokenService(IOptions<JwtSettings> _jwtSettings) : ITokenService
     {

@@ -1,0 +1,10 @@
+﻿namespace Carizon.Application.Response.AuthResponse
+{
+    public class RegisterResponse
+    {
+        public Guid Id { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public bool RequiresEmailConfirmation { get; set; }
+    }
+}

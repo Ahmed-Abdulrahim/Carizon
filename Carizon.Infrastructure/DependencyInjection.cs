@@ -1,4 +1,6 @@
-﻿namespace Carizon.Infrastructure
+﻿using Carizon.Infrastructure.Services.AuthServices;
+
+namespace Carizon.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -64,6 +66,8 @@
             // Register services
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }

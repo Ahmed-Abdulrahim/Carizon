@@ -6,3 +6,7 @@ global using Carizon.Application.Dtos.AuthDto;
 global using FluentValidation;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Filters;
+global using Carizon.Application.Response.AuthResponse;
+global using Carizon.Application.Shared;
+global using AutoMapper;
+global using System.Reflection;

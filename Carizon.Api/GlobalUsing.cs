@@ -9,3 +9,7 @@ global using Carizon.Api.Errors;
 global using Carizon.Domain.Exceptions;
 global using System.Net;
 global using System.Text.Json;
+global using Microsoft.AspNetCore.Mvc;
+global using Carizon.Application.Dtos.AuthDto;
+global using Carizon.Application.Interfaces.AuthInterface;
+global using Carizon.Application.Response.AuthResponse;
