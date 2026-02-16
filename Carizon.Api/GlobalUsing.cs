@@ -5,3 +5,7 @@ global using Carizon.Api.Extension;
 global using Carizon.Infrastructure.Presistence;
 global using Carizon.Infrastructure.Presistence.DbContext;
 global using Microsoft.EntityFrameworkCore;
+global using Carizon.Api.Errors;
+global using Carizon.Domain.Exceptions;
+global using System.Net;
+global using System.Text.Json;

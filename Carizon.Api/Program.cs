@@ -1,3 +1,8 @@
+using Carizon.Api.Middleware;
+using Carizon.Application.Validation;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace Carizon.Api
 {
     public class Program
@@ -8,7 +13,18 @@ namespace Carizon.Api
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidateModelAttribute>();
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition =
+                    JsonIgnoreCondition.WhenWritingNull;
+
+                options.JsonSerializerOptions.PropertyNamingPolicy =
+                    JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -39,6 +55,7 @@ namespace Carizon.Api
             }
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
+            app.UseGlobalExceptionHandler();
 
             app.UseAuthentication();
             app.UseAuthorization();
