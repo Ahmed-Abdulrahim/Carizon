@@ -2,7 +2,7 @@
 {
     public class AuthService(IUnitOfWork unitOfWork, SignInManager<ApplicationUser> signInManager,
         UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<EmailSettings> _emailSettings,
-        IEmailService emailService, ITokenService tokenService, ILogger<AuthService> logger) : IAuthService
+        IEmailService emailService, ITokenService tokenService, ILogger<AuthService> logger, IAccountService accountService) : IAuthService
     {
         private readonly EmailSettings emailSettings = _emailSettings.Value;
 
@@ -135,6 +135,52 @@
             return ResultResponse<RefreshTokenResponse>.Success(refreshTokenResponse);
         }
 
+        //Forget Password
+        public async Task<ResultResponse<string>> ForgetPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
+            if (user is null || !user.EmailConfirmed)
+            {
+                return ResultResponse<string>.Success();
+            }
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var resetLink = $"{emailSettings.BaseUrl}/api/Authentication/reset-password?email={UrlEncoder.Default.Encode(user.Email!)}&token={encodedToken}";
+
+            try
+            {
+                await emailService.SendPasswordResetAsync(user.Email!, resetLink);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to send password reset email to {Email}", user.Email);
+            }
+            return ResultResponse<string>.Success();
+        }
+
+        //ResetPassword
+        public async Task<ResultResponse<string>> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+            if (user == null)
+            {
+                return ResultResponse<string>.Failure("Invalid request.");
+            }
+
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordDto.Token));
+            var result = await userManager.ResetPasswordAsync(user, decodedToken, resetPasswordDto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
+                return ResultResponse<string>.Failure(string.Join(", ", errors));
+            }
+
+            await accountService.LogoutAsync(user.Id.ToString());
+
+            logger.LogInformation("Password reset successfully for user {Email}", user.Email);
+            return ResultResponse<string>.Success();
+        }
 
 
         //Private Methods

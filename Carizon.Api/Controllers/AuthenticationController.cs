@@ -4,6 +4,7 @@
     [Route("api/[controller]")]
     public class AuthenticationController(IAuthService authService) : ControllerBase
     {
+        //Register
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -61,6 +62,36 @@
             }
             return Ok(result);
         }
+
+        //ForgotPassword
+        [HttpPost("Forget-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        {
+            var user = await authService.ForgetPasswordAsync(forgotPasswordDto);
+            if (!user.Succeeded)
+            {
+                return BadRequest(user);
+            }
+            return Ok(user);
+        }
+
+        //Reset Password
+        [HttpPost("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            var result = await authService.ResetPasswordAsync(resetPasswordDto);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+
 
     }
 }

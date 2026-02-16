@@ -14,5 +14,13 @@
         //RefreshToken
         Task<ResultResponse<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto);
 
+        //ForgetPassword
+        Task<ResultResponse<string>> ForgetPasswordAsync(ForgotPasswordDto forgotPasswordDto);
+
+        //Reset Password
+        public Task<ResultResponse<string>> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+
+
+
     }
 }

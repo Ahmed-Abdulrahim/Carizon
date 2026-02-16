@@ -13,3 +13,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Carizon.Application.Dtos.AuthDto;
 global using Carizon.Application.Interfaces.AuthInterface;
 global using Carizon.Application.Response.AuthResponse;
+global using Carizon.Application.Interfaces;
+global using Microsoft.AspNetCore.Authorization;
+global using System.Security.Claims;

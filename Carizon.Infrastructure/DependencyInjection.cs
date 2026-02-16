@@ -68,6 +68,7 @@ namespace Carizon.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAccountService, AccountService>();
             return services;
         }
     }
