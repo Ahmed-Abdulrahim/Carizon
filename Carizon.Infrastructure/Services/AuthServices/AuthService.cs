@@ -1,6 +1,8 @@
 ﻿namespace Carizon.Infrastructure.Services.AuthServices
 {
-    public class AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<EmailSettings> _emailSettings, IEmailService emailService, ITokenService tokenService, ILogger<AuthService> logger) : IAuthService
+    public class AuthService(IUnitOfWork unitOfWork, SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<EmailSettings> _emailSettings,
+        IEmailService emailService, ITokenService tokenService, ILogger<AuthService> logger) : IAuthService
     {
         private readonly EmailSettings emailSettings = _emailSettings.Value;
 
@@ -14,6 +16,8 @@
             }
             var user = mapper.Map<ApplicationUser>(registerDto);
             var createUser = await userManager.CreateAsync(user, registerDto.Password);
+            var addRole = await userManager.AddToRoleAsync(user, "User");
+
             if (!createUser.Succeeded)
             {
                 var errors = createUser.Errors.Select(e => e.Description);
@@ -68,6 +72,102 @@
 
             logger.LogInformation("Email confirmed for user {Email}", user.Email);
             return ResultResponse<ConfirmEmailResponse>.Success();
+        }
+
+        //Login User
+        public async Task<ResultResponse<LoginResponse>> LoginAsync(LoginDto loginDto)
+        {
+            var user = await userManager.FindByEmailAsync(loginDto.Email);
+            if (user is null) return ResultResponse<LoginResponse>.Failure("Invalid email or password.");
+
+            if (!user.EmailConfirmed) return ResultResponse<LoginResponse>.Failure("Email is not confirmed.");
+
+            var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true);
+            if (!result.Succeeded)
+            {
+                return ResultResponse<LoginResponse>.Failure("Invalid email or password.");
+            }
+
+            return await GenerateAuthTokensAsync(user);
+        }
+
+        //Refresh Token
+        public async Task<ResultResponse<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenDto refreshTokenDto)
+        {
+            // Check if Access Token Expire
+            var principal = tokenService.GetPrincipalFromExpiredToken(refreshTokenDto.Token);
+            if (principal is null) return ResultResponse<RefreshTokenResponse>.Failure("Invalid access token.");
+
+            // Check if Token Related to User
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId is null) return ResultResponse<RefreshTokenResponse>.Failure("Invalid access token.");
+            var user = await userManager.FindByIdAsync(userId);
+            if (user is null) return ResultResponse<RefreshTokenResponse>.Failure("User not found.");
+            // get Validate Refresh Token From Db
+            var specRefreshToken = new RefreshTokenSpecification(rt => rt.Token == refreshTokenDto.RefreshToken && rt.UserId == user.Id && rt.ExpiresAt >= DateTime.UtcNow && rt.IsRevoked == false);
+            var getRefreshToken = await unitOfWork.Repository<RefreshToken>().GetByIdSpecTrackedAsync(specRefreshToken);
+            if (getRefreshToken is null) return ResultResponse<RefreshTokenResponse>.Failure("Invalid refresh token.");
+            var roles = await userManager.GetRolesAsync(user);
+
+            //Generate new Access && Refresh Token
+            var newAccessToken = await tokenService.GenerateAccesToken(user, roles);
+            var newRefeshToken = tokenService.GenerateRefreshtoken();
+            var refreshTokenrow = new RefreshToken
+            {
+                Token = newRefeshToken,
+                ExpiresAt = tokenService.GetRefreshTokenExpiration(),
+                UserId = user.Id,
+            };
+            //Revoke the Old RefreshToken
+            getRefreshToken.IsRevoked = true;
+            getRefreshToken.RevokedAt = DateTime.UtcNow;
+            unitOfWork.Repository<RefreshToken>().Update(getRefreshToken);
+            await unitOfWork.Repository<RefreshToken>().AddAsync(refreshTokenrow);
+            await unitOfWork.CommitAsync();
+            var refreshTokenResponse = new RefreshTokenResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefeshToken,
+                AccessTokenExpiration = tokenService.GetAccessTokenExpiration(),
+                RefreshTokenExpiration = tokenService.GetRefreshTokenExpiration(),
+
+            };
+            return ResultResponse<RefreshTokenResponse>.Success(refreshTokenResponse);
+        }
+
+
+
+        //Private Methods
+        private async Task<ResultResponse<LoginResponse>> GenerateAuthTokensAsync(ApplicationUser user)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            var accessToken = await tokenService.GenerateAccesToken(user, roles);
+            var refreshToken = tokenService.GenerateRefreshtoken();
+
+
+            var refreshTokenrow = new RefreshToken
+            {
+                Token = refreshToken,
+                ExpiresAt = tokenService.GetRefreshTokenExpiration(),
+                UserId = user.Id,
+            };
+            await unitOfWork.Repository<RefreshToken>().AddAsync(refreshTokenrow);
+            await unitOfWork.CommitAsync();
+
+            var loginResponse = new LoginResponse
+            {
+                AccessToken = accessToken,
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                RefreshToken = refreshToken,
+                AccessTokenExpiration = tokenService.GetAccessTokenExpiration(),
+                RefreshTokenExpiration = tokenService.GetRefreshTokenExpiration(),
+                Roles = roles.ToList()
+
+            };
+            return ResultResponse<LoginResponse>.Success(loginResponse, "Login Successfully");
         }
 
 

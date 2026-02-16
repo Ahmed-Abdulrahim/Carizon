@@ -10,3 +10,4 @@ global using Carizon.Application.Response.AuthResponse;
 global using Carizon.Application.Shared;
 global using AutoMapper;
 global using System.Reflection;
+global using System.ComponentModel.DataAnnotations;
