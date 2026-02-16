@@ -11,4 +11,13 @@ global using System.Linq.Expressions;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Carizon.Infrastructure.Specifications;
 global using Carizon.Infrastructure.Repositories;
-
+global using Carizon.Application.Interfaces.AuthInterface;
+global using System.Security.Claims;
+global using Carizon.Infrastructure.Settings;
+global using Microsoft.Extensions.Options;
+global using Microsoft.IdentityModel.Tokens;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Cryptography;
+global using System.Text;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Carizon.Infrastructure.Services;
