@@ -21,3 +21,7 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Carizon.Infrastructure.Services;
+global using MailKit.Security;
+global using Microsoft.Extensions.Logging;
+global using MimeKit;
+global using MailKit.Net.Smtp;
