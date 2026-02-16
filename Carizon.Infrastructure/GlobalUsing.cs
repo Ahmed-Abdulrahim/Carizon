@@ -31,3 +31,5 @@ global using Carizon.Application.Shared;
 global using AutoMapper;
 global using Microsoft.AspNetCore.WebUtilities;
 global using System.Text.Encodings.Web;
+global using Carizon.Application.Dtos;
+global using Carizon.Application.Response;

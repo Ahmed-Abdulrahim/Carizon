@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Carizon.Infrastructure.Presistence.Migrations
 {
     [DbContext(typeof(CarizonDbContext))]
-    [Migration("20260212123257_UpdateDataBase")]
-    partial class UpdateDataBase
+    [Migration("20260216181028_CreateDtaBase")]
+    partial class CreateDtaBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

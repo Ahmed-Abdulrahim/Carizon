@@ -11,3 +11,5 @@ global using Carizon.Application.Shared;
 global using AutoMapper;
 global using System.Reflection;
 global using System.ComponentModel.DataAnnotations;
+global using Carizon.Application.Response;
+global using Carizon.Application.Dtos;
