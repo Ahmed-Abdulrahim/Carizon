@@ -128,9 +128,9 @@
                 var secureSocketOptions = emailSettings.UseSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto;
 
                 await client.ConnectAsync(emailSettings.SmtpHost, emailSettings.SmtpPort, secureSocketOptions);
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SmtpUser)") ?? emailSettings.SmtpUser))
+                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SmtpUser") ?? emailSettings.SmtpUser))
                 {
-                    await client.AuthenticateAsync(Environment.GetEnvironmentVariable("SmtpUser)") ?? emailSettings.SmtpUser, Environment.GetEnvironmentVariable("SmtpPassword)") ?? emailSettings.SmtpPassword);
+                    await client.AuthenticateAsync(Environment.GetEnvironmentVariable("SmtpUser") ?? emailSettings.SmtpUser, Environment.GetEnvironmentVariable("SmtpPassword") ?? emailSettings.SmtpPassword);
                 }
 
                 await client.SendAsync(message);
